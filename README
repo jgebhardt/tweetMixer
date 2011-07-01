@@ -1,0 +1,8 @@
+tweetMixer
+Music Hack Day Berlin 2011 Project
+2011 Jonas Gebhardt
+jonas.gebhardt@gmail.com
+
+tweetMixer/Babbly takes tweets tagged with #MHD11, speaks them to files via 'say'. The tweets are looped simultaneously in a Browser. You can control the volume of each tweet with good old midi hardware, sending control messages to the html5/jQuery interface via socket.io.
+
+This is just a quick hack, so don't expect anything big :)

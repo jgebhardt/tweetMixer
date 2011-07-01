@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!--<script src="http://code.jquery.com/jquery-latest.js"></script>-->
+  <link type="text/css" href="css/ui-darkness/jquery-ui-1.8.13.custom.css" rel="Stylesheet" />	
+  <link rel="stylesheet" media="all" type="text/css" href="main.css" /> 
+  <script type="text/javascript" src="js/jquery-1.5.1.min.js"></script>
+  <script type="text/javascript" src="js/jquery-ui-1.8.13.custom.min.js"></script>
+  <script>
+  var audios = [];
+  var loading = 0;
+
+  function startPlayingAll() {
+    $("#console").append("playing all<br>");
+      for (var i = 0; i < audios.length; i++)
+        startPlaying(i);
+  }
+  
+  function startPlaying(audio_id) {
+    var audio = audios[audio_id];
+    $("#console").append("audio " + audio_id + "/" + audios.length  + "src: " + audio.src + " <br>");
+    audio.currentTime = 0.0;
+    audio.play();
+    window.setTimeout(function(){
+      startPlaying(audio_id);
+    }, Math.round(Math.random()*5000));
+  }
+  
+  function setVolume(channel, value) {
+    $("#console").append("set volume " + channel + ", " + value  + "<br>");
+    audios[channel].volume = value/127;    
+  }
+  
+  function addSound(name) {
+    loading++;
+    $("#console").append("added sound " + name + "<br>");
+    var audio = document.createElement("audio");
+    audio.loop = true;
+    audio.volume = 20/127;
+    audio.addEventListener("canplaythrough", function (audio) {
+      loading--;
+      $("#console").append("loading=" + loading + "<br>");
+      if (loading == 0) {// All files are preloaded
+        startPlayingAll();
+      }
+    }, false);
+    audio.addEventListener("ended", function(audio) {
+      $("#console").append("ended <br>");
+      audio.currentTime = 0;
+      audio.play();     
+    }, false);
+
+    
+    audio.src = "audio/tweet" + name + ".m4a";
+    audios.push(audio);
+    $("#console").append("loading=" + loading + " audio=" + audio + "<br>");
+  }
+
+
+	$(function() {
+		// setup graphic EQ
+		var count = 0;
+		$( "#mixer > span" ).each(function() {
+		  count++;
+			// read initial values from markup and remove that
+			var value = parseInt( $( this ).text(), 10 );
+			$( this ).empty().slider({
+				value: value,
+				range: "min",
+				max: 127,
+				animate: true,
+				orientation: "vertical"
+			});        
+		});  
+		 
+    for (var i = 1; i < 16; i++)
+		  addSound(i);
+	});
+</script>
+</head>
+<body>
+
+<div id="mixer">
+  <span>20</span>
+  <span>20</span>
+  <span>20</span>
+  <span>20</span>
+  <span>20</span>
+  <span>20</span>
+  <span>20</span>
+  <span>20</span>
+  <span>20</span>
+  <span>20</span>
+  <span>20</span>
+  <span>20</span>
+  <span>20</span>
+  <span>20</span>
+  <span>20</span>
+  <span>20</span>
+    <div id="values">
+      <span>20</span>
+      <span>20</span>
+      <span>20</span>
+      <span>20</span>
+      <span>20</span>
+      <span>20</span>
+      <span>20</span>
+      <span>20</span>
+      <span>20</span>
+      <span>20</span>
+      <span>20</span>
+      <span>20</span>
+      <span>20</span>
+      <span>20</span>
+      <span>20</span>
+      <span>20</span>
+    </div>  
+</div>
+
+<div id="console"></div>
+
+<button onclick="startPlaying(1)">Play #1</button>
+
+<div id="debug">
+  <div id="midi-msg"></div>
+</div>
+
+<script>
+$.getScript('/socket.io/socket.io.js', function(){
+    var socket = new io.Socket(null, {port: 3000, rememberTransport: false});
+    socket.connect();
+    socket.on('message', function(json) {
+        var obj = JSON.parse(json);
+        $('#midi-msg').html( json );
+        $("#console").append(json + "<br>");
+        $('#mixer > span').eq(obj.channel - 1).slider({value: obj.value });
+        $('#mixer #values > span').eq(obj.channel - 1).html( obj.value );
+        setVolume(obj.channel - 1, obj.value);
+    });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,66 @@
+body {
+  font-family:Helvetica, Arial, Sans-Serif;
+  margin: 0px;
+  background-color:#444;
+}
+
+#mixer{
+  position:relative;
+  top: 0;
+  left: 0;
+  padding: 1em;
+  height: 90%;
+  float:left;
+}
+
+#mixer span {
+		height:400px; 
+		float:left; 
+		margin:15px
+	}
+	
+#values {
+  clear:both;
+}	
+	
+#mixer #values span {
+	height:80px; 
+	width:16px;
+	text-align:center;
+	float:left; 
+	margin:15px
+	font-size: 4em;
+	color:#fff;  
+}
+
+#console {
+  float:left;
+  width:400px;
+  height:500px;
+  background-color:#000;
+  color:#fff;
+  margin:2em;
+  font-size:0.7em;  
+  overflow:scroll;
+}
+
+#debug {
+  position: fixed;
+  bottom: 0;
+  height: 6%;
+  width: 100%;
+  padding: 1em;
+  background-color:#ddd;
+}
+
+#midi-msg {
+  font-size: 2em;
+  color: #800;
+}  
+
+#test {
+  float:right;
+  width:100px;
+  border: 1px solid red;  
+  background-color:#fff;
+}
